@@ -1,8 +1,11 @@
 # QtScrcpy
 
-![build state](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Windows](https://github.com/barry-ran/QtScrcpy/workflows/Windows/badge.svg)
+![MacOS](https://github.com/barry-ran/QtScrcpy/workflows/MacOS/badge.svg)
+![Ubuntu](https://github.com/barry-ran/QtScrcpy/workflows/Ubuntu/badge.svg)
+
 ![license](https://img.shields.io/badge/license-Apache2.0-blue.svg)
-![release](https://img.shields.io/badge/release-v1.0.3-brightgreen.svg)
+![release](https://img.shields.io/badge/release-v1.3.0-brightgreen.svg)
 
 [English introduction](README.md)
 
@@ -30,7 +33,7 @@ QtScrcpy可以通过USB(或通过TCP/IP)连接Android设备，并进行显示和
 
 ![linux](screenshot/ubuntu.png)
 
-## 自定义按键映射（仅windows平台开启）
+## 自定义按键映射（仅windows&MacOS平台开启）
 可以根据需要，自己编写脚本将PC键盘按键映射为手机的触摸点击，编写规则在[这里](docs/按键映射说明.md)。
 
 默认自带了针对和平精英手游和抖音进行键鼠映射的映射脚本，开启平精英手游后可以用键鼠像玩端游一样玩和平精英手游，开启抖音映射以后可以使用上下左右方向键模拟上下左右滑动，你也可以按照[编写规则](docs/按键映射说明.md)编写其他游戏的映射文件，默认按键映射如下：
@@ -48,6 +51,11 @@ QtScrcpy可以通过USB(或通过TCP/IP)连接Android设备，并进行显示和
 - 再次按~键切换为正常控制模式
 - 要想wasd控制开车记得在载具设置中设置为单摇杆模式
 
+## 群控
+你可以同时控制所有的手机
+
+![gc](docs/image/group-control.gif)
+
 ## 感谢
 
 基于[Genymobile](https://github.com/Genymobile)的[scrcpy](https://github.com/Genymobile/scrcpy)项目进行复刻，重构，非常感谢。QtScrcpy和原版scrcpy区别如下：
@@ -60,7 +68,7 @@ QtScrcpy可以通过USB(或通过TCP/IP)连接Android设备，并进行显示和
 跨平台基础设施|自己封装|Qt提供
 编程语言|C|C++
 编程方式|同步|异步
-控制方式|单点触控|单点/多点触控
+按键映射|不支持自定义|支持自定义按键映射
 编译方式|meson+gradle|Qt Creator
 
 - 使用Qt可以非常容易的定制自己的界面

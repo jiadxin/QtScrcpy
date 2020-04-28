@@ -1,11 +1,12 @@
 #ifndef VIDEOFORM_H
 #define VIDEOFORM_H
 
-#include <QWidget>
 #include <QPointer>
+#include <QWidget>
 
-namespace Ui {
-class videoForm;
+namespace Ui
+{
+    class videoForm;
 }
 
 struct AVFrame;
@@ -13,6 +14,7 @@ class ToolForm;
 class Device;
 class FileHandler;
 class QYUVOpenGLWidget;
+class QLabel;
 class VideoForm : public QWidget
 {
     Q_OBJECT
@@ -28,15 +30,17 @@ public:
     const QSize &frameSize();
     void resizeSquare();
     void removeBlackRect();
+    void showFPS(bool show);
 
 public slots:
     void onSwitchFullScreen();
+    void updateFPS(quint32 fps);
 
-private:    
+private:
     void updateStyleSheet(bool vertical);
     QMargins getMargins(bool vertical);
     void initUI();
-    
+
     void showToolForm(bool show = true);
     void moveCenter();
     void installShortcut();
@@ -63,10 +67,11 @@ protected:
 
 private:
     // ui
-    Ui::videoForm *ui;    
+    Ui::videoForm *ui;
     QPointer<ToolForm> m_toolForm;
     QPointer<QWidget> m_loadingWidget;
     QPointer<QYUVOpenGLWidget> m_videoWidget;
+    QPointer<QLabel> m_fpsLabel;
 
     //inside member
     QSize m_frameSize;

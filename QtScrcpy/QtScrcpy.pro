@@ -26,6 +26,12 @@ msvc{
     QMAKE_CFLAGS += -source-charset:utf-8
     QMAKE_CXXFLAGS += -source-charset:utf-8
 }
+
+# warning as error
+#4566 https://github.com/Chuyu-Team/VC-LTL/issues/27
+*g++*: QMAKE_CXXFLAGS += -Werror
+*msvc*: QMAKE_CXXFLAGS += /WX /wd4566
+
 # 源码
 SOURCES += \
         main.cpp \
@@ -56,10 +62,18 @@ INCLUDEPATH += \
         $$PWD/devicemanage \
         $$PWD/fontawesome
 
-# 统一版本号入口,只修改这一个地方即可
-VERSION_MAJOR = 1
-VERSION_MINOR = 3
-VERSION_PATCH = 0
+# 如果变量没有定义
+# !defined(TEST_VAR, var) {
+#     message("test")
+# }
+
+# 从文件读取版本号
+CAT_VERSION = $$cat($$PWD/version)
+# 拆分出版本号
+VERSION_MAJOR = $$section(CAT_VERSION, ., 0, 0)
+VERSION_MINOR = $$section(CAT_VERSION, ., 1, 1)
+VERSION_PATCH = $$section(CAT_VERSION, ., 2, 2)
+message("version:" $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH})
 
 # qmake变量的方式定义版本号
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH}
@@ -121,6 +135,7 @@ win32 {
     # windows rc file
     RC_FILE = $$PWD/res/QtScrcpy.rc
 }
+
 # ***********************************************************
 # Mac平台下配置
 # ***********************************************************
@@ -158,12 +173,12 @@ macos {
 
     # mac application icon
     ICON = $$PWD/res/QtScrcpy.icns
-    QMAKE_INFO_PLIST = $$PWD/res/Info_mac.plist
+    QMAKE_INFO_PLIST = $$PWD/res/Info_Mac.plist
 
     # 定义目标命令（修改版本号字段）
     plistupdate.commands = /usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $$VERSION\" \
     -c \"Set :CFBundleVersion $$VERSION\" \
-    $$QMAKE_INFO_PLIST
+    $$DESTDIR/$${TARGET}.app/Contents/Info.plist
 
     # 增加额外目标
     QMAKE_EXTRA_TARGETS += plistupdate

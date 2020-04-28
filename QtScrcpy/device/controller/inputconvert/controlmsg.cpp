@@ -1,22 +1,19 @@
 #include <QDebug>
 
-#include "controlmsg.h"
 #include "bufferutil.h"
+#include "controlmsg.h"
 
-ControlMsg::ControlMsg(ControlMsgType controlMsgType)
-    : QScrcpyEvent(Control)
+ControlMsg::ControlMsg(ControlMsgType controlMsgType) : QScrcpyEvent(Control)
 {
     m_data.type = controlMsgType;
 }
 
 ControlMsg::~ControlMsg()
 {
-    if (CMT_SET_CLIPBOARD == m_data.type
-            && Q_NULLPTR != m_data.setClipboard.text) {
+    if (CMT_SET_CLIPBOARD == m_data.type && Q_NULLPTR != m_data.setClipboard.text) {
         delete m_data.setClipboard.text;
         m_data.setClipboard.text = Q_NULLPTR;
-    } else if (CMT_INJECT_TEXT == m_data.type
-               && Q_NULLPTR != m_data.injectText.text){
+    } else if (CMT_INJECT_TEXT == m_data.type && Q_NULLPTR != m_data.injectText.text) {
         delete m_data.injectText.text;
         m_data.injectText.text = Q_NULLPTR;
     }
@@ -29,7 +26,7 @@ void ControlMsg::setInjectKeycodeMsgData(AndroidKeyeventAction action, AndroidKe
     m_data.injectKeycode.metastate = metastate;
 }
 
-void ControlMsg::setInjectTextMsgData(QString& text)
+void ControlMsg::setInjectTextMsgData(QString &text)
 {
     // write length (2 byte) + string (non nul-terminated)
     if (CONTROL_MSG_TEXT_MAX_LENGTH < text.length()) {
@@ -78,7 +75,7 @@ void ControlMsg::setSetScreenPowerModeData(ControlMsg::ScreenPowerMode mode)
     m_data.setScreenPowerMode.mode = mode;
 }
 
-void ControlMsg::writePosition(QBuffer &buffer, const QRect& value)
+void ControlMsg::writePosition(QBuffer &buffer, const QRect &value)
 {
     BufferUtil::write32(buffer, value.left());
     BufferUtil::write32(buffer, value.top());
@@ -93,7 +90,7 @@ quint16 ControlMsg::toFixedPoint16(float f)
     if (u >= 0xffff) {
         u = 0xffff;
     }
-    return (quint16) u;
+    return (quint16)u;
 }
 
 QByteArray ControlMsg::serializeData()
@@ -110,26 +107,24 @@ QByteArray ControlMsg::serializeData()
         BufferUtil::write32(buffer, m_data.injectKeycode.metastate);
         break;
     case CMT_INJECT_TEXT:
-        BufferUtil::write16(buffer, strlen(m_data.injectText.text));
+        BufferUtil::write16(buffer, static_cast<quint32>(strlen(m_data.injectText.text)));
         buffer.write(m_data.injectText.text, strlen(m_data.injectText.text));
         break;
-    case CMT_INJECT_TOUCH:
-    {
+    case CMT_INJECT_TOUCH: {
         buffer.putChar(m_data.injectTouch.action);
         BufferUtil::write64(buffer, m_data.injectTouch.id);
         writePosition(buffer, m_data.injectTouch.position);
         quint16 pressure = toFixedPoint16(m_data.injectTouch.pressure);
         BufferUtil::write16(buffer, pressure);
         BufferUtil::write32(buffer, m_data.injectTouch.buttons);
-    }
-        break;
+    } break;
     case CMT_INJECT_SCROLL:
         writePosition(buffer, m_data.injectScroll.position);
         BufferUtil::write32(buffer, m_data.injectScroll.hScroll);
         BufferUtil::write32(buffer, m_data.injectScroll.vScroll);
         break;
     case CMT_SET_CLIPBOARD:
-        BufferUtil::write16(buffer, strlen(m_data.setClipboard.text));
+        BufferUtil::write16(buffer, static_cast<quint32>(strlen(m_data.setClipboard.text)));
         buffer.write(m_data.setClipboard.text, strlen(m_data.setClipboard.text));
         break;
     case CMT_SET_SCREEN_POWER_MODE:
